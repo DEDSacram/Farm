@@ -5,8 +5,8 @@ import org.farm.farm.Farm;
 import org.farm.market.Market;
 
 public class Game {
-    private Farm farm;
-    private Market market;
+    private final Farm farm;
+    private final Market market;
     private int turn;
     Scanner scanner = new Scanner(System.in);
 
@@ -37,8 +37,6 @@ public class Game {
                         break;
                     case "2":
                         System.out.println(market.getProducts());
-                       // market.buyProduct();
-                        //  market.sellProduct();
                         break;
                     case "3":
                         System.out.println("Buy product {name,quantity} for now index");
