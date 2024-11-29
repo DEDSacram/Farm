@@ -1,8 +1,5 @@
 package org.farm.farm;
 
-
-
-import java.util.List;
 import java.util.Random;
 
 public class Catastrophe {
@@ -17,23 +14,21 @@ public class Catastrophe {
         }
     }
 
-    private static void affectCrops(List<Crop> crops) {
-        for (Crop crop : crops) {
-            if (RANDOM.nextInt(100) < 50) { // 50% chance to reduce growth
-                crop.decrementGrowthTime();
+    private static void affectCrops(Crop[] crops) {
+        for (int i = 0; i < crops.length; i++) {
+            if (crops[i] != null && RANDOM.nextInt(100) < 50) {  // 50% chance to reduce growth
+                crops[i].decrementGrowthTime();
                 System.out.println("Catastrophe reduced crop growth!");
             }
         }
     }
 
-    private static void affectAnimals(List<Animal> animals) {
-        animals.removeIf(animal -> {
-            if (animal.getAge() > 5 && RANDOM.nextInt(100) < 50) {  // 50% chance to kill older animals
-                System.out.println("A catastrophe killed an animal aged " + animal.getAge());
-                return true;
+    private static void affectAnimals(Animal[] animals) {
+        for (int i = 0; i < animals.length; i++) {
+            if (animals[i] != null && animals[i].getAge() > 5 && RANDOM.nextInt(100) < 50) {  // 50% chance to kill older animals
+                System.out.println("A catastrophe killed an animal aged " + animals[i].getAge());
+                animals[i] = null;  // Remove the animal by setting it to null
             }
-            return false;
-        });
+        }
     }
 }
-

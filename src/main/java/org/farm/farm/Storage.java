@@ -1,55 +1,84 @@
 package org.farm.farm;
 
-
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.LinkedList;
 
 public class Storage {
-    private Map<Product, Integer> products;
+
+    private final LinkedList<Product> inventory; // Use LinkedList instead of an array
+    public static final int MAX_CAPACITY = 10; // Limit storage to 10 products
 
     public Storage() {
-        this.products = new HashMap<>();
+        inventory = new LinkedList<>();
     }
 
-    public void addProduct(Product productName, int quantity) {
-        products.put(productName, products.getOrDefault(productName, 0) + quantity);
+    // Add product to the inventory
+    public boolean addProduct(Product product) {
+        if (inventory.size() >= MAX_CAPACITY) {
+            System.out.println("Inventory is full!");
+            return false;
+        }
+        inventory.add(product); // Adds product to the end of the list
+        return true;
     }
 
-    public void removeProduct(Product productName, int quantity) {
-        if (products.containsKey(productName)) {
-            int remaining = products.get(productName) - quantity;
-            if (remaining <= 0) products.remove(productName);
-            else products.put(productName, remaining);
+    public boolean removeProduct(int index) {
+        if (index < 0 || index >= inventory.size()) {
+            System.out.println("Invalid index!");
+            return false;
+        }
+
+        Product product = inventory.get(index);
+        if (product.getQuantity() == 0) {  // Check if quantity is zero
+            inventory.remove(index);  // Remove product from storage if quantity is zero
+            System.out.println("Product removed from storage: " + product.getName());
+            return true;
+        } else {
+            System.out.println("Product still has quantity, cannot remove yet.");
+            return false;  // Do not remove if the product still has quantity
         }
     }
 
-    public Map<Product, Integer> getProducts() {
-        return products;
+
+    // Get product by index
+    public Product getProduct(int index) {
+        if (index < 0 || index >= inventory.size()) {
+            System.out.println("Invalid index!");
+            return null;
+        }
+        return inventory.get(index); // Retrieves the product at the specified index
     }
 
-    public Product getbyIndex(int index){
-
-        List<Map.Entry<Product, Integer>> productList = new ArrayList<>(products.entrySet());
-        Map.Entry<Product, Integer> entryAtIndex = productList.get(index);
-        Product product = entryAtIndex.getKey();
-        Integer quantity = entryAtIndex.getValue();
-        return product;
-    }
-
-    // New method to print the contents of the storage
-    public void printStorage() {
-        if (products.isEmpty()) {
+    // In Storage class
+    public void printStorageWithIndex(boolean isIndexingEnabled) {
+        if (inventory.isEmpty()) {
             System.out.println("Storage is empty.");
         } else {
             System.out.println("Storage contents:");
-            for (Map.Entry<Product, Integer> entry : products.entrySet()) {
-                Product product = entry.getKey();
-                int quantity = entry.getValue();
-                System.out.println(product.getName() + " - Quantity: " + quantity);
+            if (isIndexingEnabled) {
+                // Print with index
+                for (int i = 0; i < inventory.size(); i++) {
+                    System.out.println(i + ": " + inventory.get(i).getName() + " - Quantity: 1");
+                }
+            } else {
+                // Print without index
+                for (Product product : inventory) {
+                    System.out.println(product.getName() + " - Quantity: " + product.getQuantity());
+                }
             }
         }
+    }
+
+    // Get the current number of products in the inventory
+    public int size() {
+        return inventory.size();
+    }
+
+    // Check if the inventory is full
+    public boolean isFull() {
+        return inventory.size() >= MAX_CAPACITY;
+    }
+
+    public LinkedList<Product> getInventory() {
+        return inventory;
     }
 }
