@@ -55,16 +55,10 @@ public class Game {
                     market.printMarketWithIndex(isIndexingEnabled);
                     break;
                 case "3":
-                    System.out.println("Buy product {name, quantity} for now index");
-                    String buyProductIndex = scanner.nextLine().toLowerCase();
-                    market.buyProductByIndex(Integer.parseInt(buyProductIndex), farm);
+                    buyProduct();
                     break;
                 case "4":
-                    System.out.println("Sell product {name, quantity} for now index");
-                    String sellProductIndex = scanner.nextLine().toLowerCase();
-                    if (farm.getStorage().getProduct(Integer.parseInt(sellProductIndex)) != null) {
-                        market.sellProductByIndex(Integer.parseInt(sellProductIndex), farm);
-                    }
+                    sellProduct();
                     break;
                 case "5":
                     addCropFromStorage(isIndexingEnabled);  // Pass indexing flag
@@ -95,6 +89,42 @@ public class Game {
                     return;  // Exit the game
                 default:
                     System.out.println("Invalid command! Please try again.");
+            }
+        }
+    }
+
+    private void buyProduct() {
+        int buyProductIndex = -1;
+        boolean validInput = false;
+
+        while (!validInput) {
+            System.out.println("Buy product {name, quantity} for now index");
+            try {
+                buyProductIndex = Integer.parseInt(scanner.nextLine());
+                market.buyProductByIndex(buyProductIndex, farm);
+                validInput = true;  // Input is valid, exit the loop
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input! Please enter a valid number for the product index.");
+            }
+        }
+    }
+
+    private void sellProduct() {
+        int sellProductIndex = -1;
+        boolean validInput = false;
+
+        while (!validInput) {
+            System.out.println("Sell product {name, quantity} for now index");
+            try {
+                sellProductIndex = Integer.parseInt(scanner.nextLine());
+                if (farm.getStorage().getProduct(sellProductIndex) != null) {
+                    market.sellProductByIndex(sellProductIndex, farm);
+                    validInput = true;  // Input is valid, exit the loop
+                } else {
+                    System.out.println("No product found at the given index.");
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input! Please enter a valid number for the product index.");
             }
         }
     }
@@ -131,26 +161,31 @@ public class Game {
 
 
     private void nextTurn() {
-
-
-        // Catastrophy in the day can happen if so you cant have the crops or animals harvested
+        // Catastrophe in the day can happen if so you cant have the crops or animals harvested
         farm.triggerCatastrophe();
 
         // Aging / Growth
         farm.incrementAnimalAge();
         farm.decreaseCropGrowthTime();
 
+        // Feed Animals from Storage (prioritize young and hungry ones)
+        farm.feedAnimalsByPriority();
 
         // Harvest crops
         farm.harvest();
-        // collect farm animal product
+
+        // Collect farm animal products
         farm.collectAnimalProducts();
 
-        // increment turn
+        // Increment turn in the market
         market.incrementTurnMarket();
+
+        // Increment turn number
         turn++;
         System.out.println("Turn " + turn + " complete.");
     }
+
+
 
     private void addCropFromStorage(boolean isIndexingEnabled) {
         System.out.println("\n=== Choose Crop to Add from Storage ===");

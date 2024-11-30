@@ -1,5 +1,11 @@
 package org.farm.farm;
 
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
 public class Farm {
     private Crop[] fields;  // Array for fields (crops)
     private Animal[] animals;  // Array for animals
@@ -13,7 +19,9 @@ public class Farm {
         this.fields = new Crop[maxCrops];  // Initialize the fields array with a fixed size
         this.animals = new Animal[maxAnimals];  // Initialize the animals array with a fixed size
         this.storage = new Storage();
-        this.coins = 100;
+        //this.coins = 100;
+        this.coins = 1000; // test
+
     }
 
     // Increment the age of each animal in the farm
@@ -77,40 +85,83 @@ public class Farm {
         Catastrophe.applyCatastrophe(this);
     }
 
-//    public void feedAnimal(int animalIndex, EdibleCropType crop) {
-//        if (animalIndex < 0 || animalIndex >= animals.length || animals[animalIndex] == null) {
-//            System.out.println("Invalid animal index.");
-//            return;
-//        }
-//
-//        Animal animal = animals[animalIndex];
-//        int newSurvivalTime = 5; // Reset survival time to 5 turns (or a value of your choice)
-//        if (!animal.feed(crop, newSurvivalTime)) {
-//            System.out.println("Failed to feed " + animal.getName() + ". Check the food type.");
-//        }
-//    }
+    public void feedAnimalsByPriority() {
+        // Sort animals by age and hunger (young and hungry animals prioritized)
+        List<Animal> sortedAnimals = Arrays.stream(animals)
+                .filter(Objects::nonNull)  // Remove null animals
+                .sorted(Comparator.comparingInt(Animal::getAge)  // Sort by age (young first)
+                        .thenComparingInt(Animal::getSurvivalTime)) // Then by hunger (lower survival time means hungrier)
+                .toList();
 
-    public void feedAnimalFromStorage(int animalIndex, int cropIndex) {
-        if (animalIndex < 0 || animalIndex >= animals.length || animals[animalIndex] == null) {
-            System.out.println("Invalid animal index.");
-            return;
+        // Feed the animals in the order of priority
+        for (Animal animal : sortedAnimals) {
+            int cropIndex = findSuitableCropForAnimal(animal);
+
+            if (cropIndex == -1) {
+                System.out.println("No suitable food available for " + animal.getName());
+                break; // Exit if no suitable food is found
+            }
+
+            // Check if the animal's survival time is 1
+            if (animal.getSurvivalTime() == 1) {
+                // Feed the animal and remove the crop from storage
+                feedAnimalFromStorage(animal, cropIndex);
+            } else {
+                System.out.println("Animal " + animal.getName() + " does not need food at this time.");
+            }
         }
 
+    }
+
+    // Method to find a suitable crop for the animal
+    private int findSuitableCropForAnimal(Animal animal) {
+        for (int i = 0; i < storage.size(); i++) {
+            Product product = storage.getProduct(i);
+            if (product instanceof Crop) {
+                Crop crop = (Crop) product;
+                if (crop.getCropType().equals(animal.getRequiredFood())) {  // Check if the crop matches the animal's preference
+                    return i;  // Return the index of the suitable crop
+                }
+            }
+        }
+        return -1;  // Return -1 if no suitable food is found
+    }
+
+    private void feedAnimalFromStorage(Animal animal, int cropIndex) {
         if (cropIndex < 0 || cropIndex >= storage.size()) {
             System.out.println("Invalid crop index.");
             return;
         }
 
-        Animal animal = animals[animalIndex];
-        Crop crop = (Crop) storage.getProduct(cropIndex);  // Cast to Crop since it's a product
+        Product product = storage.getProduct(cropIndex);  // Get the product from storage
+        if (product instanceof Crop) {  // Check if the product is a crop
+            Crop crop = (Crop) product;
 
-        if (animal.feed(crop.getCropType(), 5)) { // Reset survival time to 5
-            System.out.println("Fed " + animal.getName() + " with " + crop.getName());
-            storage.removeProduct(cropIndex); // Remove the crop from storage after feeding
+            // Feed the animal and reset its survival time to 5
+            if (animal.feed(crop.getCropType())) {
+                System.out.println("Fed " + animal.getName() + " with " + crop.getName());
+
+                // Decrease the quantity of the product
+                crop.decreaseQuantity();
+
+                // Check if the quantity is zero, then remove the product
+                if (crop.getQuantity() == 0) {
+                    storage.removeProduct(cropIndex);  // Remove product if quantity is zero
+                    System.out.println(crop.getName() + " has been removed from storage due to zero quantity.");
+                }
+            } else {
+                System.out.println(animal.getName() + " cannot eat " + crop.getName());
+            }
         } else {
-            System.out.println(animal.getName() + " cannot eat " + crop.getName());
+            System.out.println("Selected product is not a valid crop for feeding.");
         }
     }
+
+
+
+
+
+
 
     // Method to expand the crop array by a specified amount
     public void expandCrops(int expandBy) {

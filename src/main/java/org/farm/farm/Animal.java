@@ -4,6 +4,7 @@ import java.util.Random;
 
 public class Animal extends Product {
     private int survivalTime;  // Turns remaining until the animal must be fed
+    private int maxSurvivalTime;
     private int age;           // Animal's age in turns
     private int maxAge;        // Animal's maximum lifespan
     private Product producedProduct;   // The product the animal generates (e.g., milk, eggs)
@@ -12,6 +13,7 @@ public class Animal extends Product {
     public Animal(String name, int price, int survivalTime, Product producedProduct, EdibleCropType requiredFood, int age, int baseMaxAge, int ageRange) {
         super(name, price);  // Use Product constructor
         this.survivalTime = survivalTime;
+        this.maxSurvivalTime = survivalTime;
         this.producedProduct = producedProduct;
         this.requiredFood = requiredFood;
         this.age = age;
@@ -25,8 +27,8 @@ public class Animal extends Product {
         return survivalTime;
     }
 
-    public void resetSurvivalTime(int time) {
-        this.survivalTime = time;
+    public void resetSurvivalTime() {
+        this.survivalTime = maxSurvivalTime;
     }
 
     public Product getProducedProduct() {
@@ -55,9 +57,9 @@ public class Animal extends Product {
     }
 
     // Feed the animal with a crop
-    public boolean feed(EdibleCropType food, int newSurvivalTime) {
+    public boolean feed(EdibleCropType food) {
         if (this.requiredFood == food) {
-            this.survivalTime = newSurvivalTime; // Reset survival time
+            this.survivalTime = this.maxSurvivalTime; // Reset survival time
             System.out.println(this.getName() + " has been fed with " + food);
             return true;
         } else {
