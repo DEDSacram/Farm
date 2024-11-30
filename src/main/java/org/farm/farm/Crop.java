@@ -31,6 +31,9 @@ public class Crop extends Product {
             growthTime--;  // Decrease growth time
         }
     }
+    public void setGrowthTime(int growthTime){
+        this.growthTime = growthTime;
+    }
 
     public int getYield() {
         return yield;
