@@ -112,6 +112,31 @@ public class Farm {
         }
     }
 
+    // Method to expand the crop array by a specified amount
+    public void expandCrops(int expandBy) {
+        Crop[] newFields = new Crop[fields.length + expandBy];
+        System.arraycopy(fields, 0, newFields, 0, fields.length);  // Copy existing crops to the new array
+        fields = newFields;  // Update the reference to the new expanded array
+
+        // Update maxCrops to reflect the new capacity
+        maxCrops += expandBy;
+
+        System.out.println("Crop space expanded! New crop capacity: " + maxCrops);
+    }
+
+    // Method to expand the animal array by a specified amount
+    public void expandAnimals(int expandBy) {
+        Animal[] newAnimals = new Animal[animals.length + expandBy];
+        System.arraycopy(animals, 0, newAnimals, 0, animals.length);  // Copy existing animals to the new array
+        animals = newAnimals;  // Update the reference to the new expanded array
+
+        // Update maxAnimals to reflect the new capacity
+        maxAnimals += expandBy;
+
+        System.out.println("Animal space expanded! New animal capacity: " + maxAnimals);
+    }
+
+
 
 
 

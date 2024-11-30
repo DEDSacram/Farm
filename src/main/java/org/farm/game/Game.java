@@ -40,7 +40,9 @@ public class Game {
             System.out.println("8. Check Farm");
             System.out.println("9. Check Storage");
             System.out.println("10. Toggle Indexing (On/Off)");
-            System.out.println("11. Exit");
+            System.out.println("11. Expand Crop Space");
+            System.out.println("12. Expand Animal Space");
+            System.out.println("13. Exit");
             System.out.print("Enter command: ");
 
             String command = scanner.nextLine().toLowerCase();
@@ -83,11 +85,47 @@ public class Game {
                     toggleIndexing();  // Toggle indexing on or off
                     break;
                 case "11":
+                    expandCropSpace();  // Expand crop space option
+                    break;
+                case "12":
+                    expandAnimalSpace();  // Expand animal space option
+                    break;
+                case "13":
                     System.out.println("Exiting the game...");
                     return;  // Exit the game
                 default:
                     System.out.println("Invalid command! Please try again.");
             }
+        }
+    }
+
+    private void expandCropSpace() {
+        int costPerExpansion = 50;  // Cost to expand crop space by 5
+        System.out.println("Enter how many crop spaces you want to expand by:");
+        int expandBy = Integer.parseInt(scanner.nextLine());
+        int totalCost = expandBy * costPerExpansion;
+
+        if (farm.getCoins() >= totalCost) {
+            farm.decreaseCoins(totalCost);
+            farm.expandCrops(expandBy);
+            System.out.println("Crop space expanded by " + expandBy + " for " + totalCost + " coins.");
+        } else {
+            System.out.println("Not enough coins! You need " + totalCost + " coins to expand the crop space.");
+        }
+    }
+
+    private void expandAnimalSpace() {
+        int costPerExpansion = 50;  // Cost to expand animal space by 5
+        System.out.println("Enter how many animal spaces you want to expand by:");
+        int expandBy = Integer.parseInt(scanner.nextLine());
+        int totalCost = expandBy * costPerExpansion;
+
+        if (farm.getCoins() >= totalCost) {
+            farm.decreaseCoins(totalCost);
+            farm.expandAnimals(expandBy);
+            System.out.println("Animal space expanded by " + expandBy + " for " + totalCost + " coins.");
+        } else {
+            System.out.println("Not enough coins! You need " + totalCost + " coins to expand the animal space.");
         }
     }
 
