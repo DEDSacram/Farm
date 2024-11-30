@@ -119,6 +119,10 @@ public class Market {
     private void addDefaultProducts() {
         Random random = new Random();
 
+        // Clear the market before adding new products (shop rotation)
+        products.clear(); // This will remove all existing products from the market
+        System.out.println("Market has been cleared for shop rotation.");
+
         // Arrays or lists of possible product types
         String[] cropNames = {"Corn", "Wheat", "Potato"};
         EdibleCropType[] cropTypes = {EdibleCropType.CORN, EdibleCropType.WHEAT, EdibleCropType.NONE};
@@ -131,77 +135,82 @@ public class Market {
         int[] baseMaxAges = {20, 10};  // Cow's max age range [15, 25], Chicken's [8, 12]
         int[] ageRanges = {5, 2};  // Cow's age range 5, Chicken's age range 2
 
-        // Randomly decide how many products to add
-        int numProductsToAdd = 5 + random.nextInt(6);  // Random number of products between 5 and 10
-        for (int i = 0; i < numProductsToAdd; i++) {
-            // Randomly select either a Crop or Animal type
-            boolean isAnimal = random.nextBoolean();
+        // Check if there are fewer than 5 items on the market
+        int numProductsToAdd = 5 - products.size();  // Add enough products to reach 5 items
+        if (numProductsToAdd > 0) {
+            for (int i = 0; i < numProductsToAdd; i++) {
+                // Randomly select either a Crop or Animal type
+                boolean isAnimal = random.nextBoolean();
 
-            if (isAnimal) {
-                // Randomly pick an animal
-                int animalIndex = random.nextInt(animalNames.length);
-                int price = 0;
+                if (isAnimal) {
+                    // Randomly pick an animal
+                    int animalIndex = random.nextInt(animalNames.length);
+                    int price = 0;
 
-                // Set price based on animal type
-                switch (animalNames[animalIndex]) {
-                    case "Cow":
-                        price = 300 + random.nextInt(201);  // Cow: Price between 300 and 500
-                        break;
-                    case "Chicken":
-                        price = 50 + random.nextInt(51);   // Chicken: Price between 50 and 100
-                        break;
+                    // Set price based on animal type
+                    switch (animalNames[animalIndex]) {
+                        case "Cow":
+                            price = 300 + random.nextInt(201);  // Cow: Price between 300 and 500
+                            break;
+                        case "Chicken":
+                            price = 50 + random.nextInt(51);   // Chicken: Price between 50 and 100
+                            break;
+                    }
+
+                    int survivalTime = 3 + random.nextInt(3);  // Random survival time between 3 and 5
+                    int maxAge = baseMaxAges[animalIndex] + random.nextInt(ageRanges[animalIndex] * 2 + 1) - ageRanges[animalIndex]; // Random maxAge within range
+                    Animal animal = new Animal(animalNames[animalIndex],
+                            price,
+                            survivalTime,
+                            new Product(animalProducts[animalIndex], 100),  // Product (Milk or Egg)
+                            animalFood[animalIndex],
+                            0,
+                            maxAge,
+                            ageRanges[animalIndex]);
+                    products.add(animal);
+                } else {
+                    // Randomly pick a crop
+                    int cropIndex = random.nextInt(cropNames.length);
+                    int price = 0;
+                    int growthTime = 0;
+                    int yield = 0;
+
+                    // Set price, growthTime, and yield based on crop type
+                    switch (cropTypes[cropIndex]) {
+                        case CORN:
+                            price = 50 + random.nextInt(51);  // Corn: Price between 50 and 100
+                            growthTime = 5 + random.nextInt(4);  // Random growth time between 5 and 8
+                            yield = 6 + random.nextInt(5);      // Lower yield, random between 6 and 10
+                            break;
+                        case WHEAT:
+                            price = 40 + random.nextInt(31);  // Wheat: Price between 40 and 70
+                            growthTime = 5 + random.nextInt(3);  // Random growth time between 5 and 7
+                            yield = 8 + random.nextInt(4);      // Moderate yield between 8 and 11
+                            break;
+                        case NONE:
+                            price = 20 + random.nextInt(21);  // Potato: Price between 20 and 40
+                            growthTime = 6 + random.nextInt(3);  // Potato: Random growth time between 6 and 8
+                            yield = 6 + random.nextInt(3);      // Potato: Lower yield between 6 and 8
+                            break;
+                    }
+
+                    boolean isImmune = cropImmunity[cropIndex];  // Use the predefined immunity
+                    Crop crop = new Crop(cropNames[cropIndex],
+                            price,
+                            growthTime,
+                            yield,
+                            cropTypes[cropIndex],
+                            isImmune);
+                    products.add(crop);
                 }
-
-                int survivalTime = 3 + random.nextInt(3);  // Random survival time between 3 and 5
-                int maxAge = baseMaxAges[animalIndex] + random.nextInt(ageRanges[animalIndex] * 2 + 1) - ageRanges[animalIndex]; // Random maxAge within range
-                Animal animal = new Animal(animalNames[animalIndex],
-                        price,
-                        survivalTime,
-                        new Product(animalProducts[animalIndex], 100),  // Product (Milk or Egg)
-                        animalFood[animalIndex],
-                        0,
-                        maxAge,
-                        ageRanges[animalIndex]);
-                products.add(animal);
-            } else {
-                // Randomly pick a crop
-                int cropIndex = random.nextInt(cropNames.length);
-                int price = 0;
-                int growthTime = 0;
-                int yield = 0;
-
-                // Set price, growthTime, and yield based on crop type
-                switch (cropTypes[cropIndex]) {
-                    case CORN:
-                        price = 50 + random.nextInt(51);  // Corn: Price between 50 and 100
-                        growthTime = 5 + random.nextInt(4);  // Random growth time between 5 and 8
-                        yield = 6 + random.nextInt(5);      // Lower yield, random between 6 and 10
-                        break;
-                    case WHEAT:
-                        price = 40 + random.nextInt(31);  // Wheat: Price between 40 and 70
-                        growthTime = 5 + random.nextInt(3);  // Random growth time between 5 and 7
-                        yield = 8 + random.nextInt(4);      // Moderate yield between 8 and 11
-                        break;
-                    case NONE:
-                        price = 20 + random.nextInt(21);  // Potato: Price between 20 and 40
-                        growthTime = 6 + random.nextInt(3);  // Potato: Random growth time between 6 and 8
-                        yield = 6 + random.nextInt(3);      // Potato: Lower yield between 6 and 8
-                        break;
-                }
-
-                boolean isImmune = cropImmunity[cropIndex];  // Use the predefined immunity
-                Crop crop = new Crop(cropNames[cropIndex],
-                        price,
-                        growthTime,
-                        yield,
-                        cropTypes[cropIndex],
-                        isImmune);
-                products.add(crop);
             }
-        }
 
-        System.out.println("Default randomized products added to the market.");
+            System.out.println("Default randomized products added to the market.");
+        } else {
+            System.out.println("Market already has 5 products, no new items added.");
+        }
     }
+
 
 
     // Get available products in the market
