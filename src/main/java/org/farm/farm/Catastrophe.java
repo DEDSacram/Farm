@@ -28,7 +28,7 @@ public class Catastrophe {
 
     private static void affectAnimals(Animal[] animals) {
         for (int i = 0; i < animals.length; i++) {
-            if (animals[i] != null && animals[i].getAge() > 5 && RANDOM.nextInt(100) < 50) {  // 50% chance to kill older animals
+            if (animals[i] != null && Math.floor((animals[i].getAge() / (double)animals[i].getMaxAge()) * 10) > 5 && RANDOM.nextInt(100) < 50) {
                 System.out.println("A catastrophe killed an animal aged " + animals[i].getAge());
                 animals[i] = null;  // Remove the animal by setting it to null
             }

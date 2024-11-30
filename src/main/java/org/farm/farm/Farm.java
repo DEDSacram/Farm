@@ -21,9 +21,15 @@ public class Farm {
         for (int i = 0; i < animals.length; i++) {
             if (animals[i] != null) {
                 animals[i].increaseAge();
+                if (!animals[i].isAlive()) {
+                    System.out.println(animals[i].getName() + " has died of old age!");
+                    animals[i] = null; // Remove the dead animal from the farm
+                }
             }
         }
     }
+
+
     public void decreaseCropGrowthTime() {
         for (Crop crop : fields) {
             if (crop != null) {  // Check if the crop is not null

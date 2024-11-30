@@ -112,11 +112,13 @@ public class Market {
 
         // Adding some animals
         // Adding some animals with produced products (e.g., Milk for Cow)
-// Adding animals
-        products.add(new Animal("Cow", 300, 2, new Product("Milk", 100), EdibleCropType.CORN, 2));
-// Cow: Price: 300, Survival: 2 turns, Produces Milk, Eats Corn.
+// Adding animals with specific age ranges
+        Animal cow = new Animal("Cow", 300, 5, new Product("Milk", 100), EdibleCropType.CORN, 0, 20, 5);
+// Cow: baseMaxAge = 20, ageRange = 5 → maxAge random between 15 and 25
 
-        products.add(new Animal("Chicken", 100, 1, new Product("Egg", 20), EdibleCropType.WHEAT, 1));
+        Animal chicken = new Animal("Chicken", 100, 3, new Product("Egg", 20), EdibleCropType.WHEAT, 0, 10, 2);
+// Chicken: baseMaxAge = 10, ageRange = 2 → maxAge random between 8 and 12
+
 // Chicken: Price: 100, Survival: 1 turn, Produces Eggs, Eats Wheat.
 
     }
