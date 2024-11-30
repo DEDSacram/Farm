@@ -19,7 +19,7 @@ public class Market {
     private static final int ROTATE_INTERVAL = 5; // Rotate every 5 turns
 
 
-    public void incrementTurn() {
+    public void incrementTurnMarket() {
         turnCounter++;
         if (turnCounter >= ROTATE_INTERVAL) {
             rotateMarket();

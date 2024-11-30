@@ -94,11 +94,22 @@ public class Game {
 
     private void nextTurn() {
 
+
+        // Catastrophy in the day can happen if so you cant have the crops or animals harvested
+        farm.triggerCatastrophe();
+
+        // Aging / Growth
         farm.incrementAnimalAge();
         farm.decreaseCropGrowthTime();
-        farm.triggerCatastrophe();
+
+
+        // Harvest crops
         farm.harvest();
+        // collect farm animal product
         farm.collectAnimalProducts();
+
+        // increment turn
+        market.incrementTurnMarket();
         turn++;
         System.out.println("Turn " + turn + " complete.");
     }
