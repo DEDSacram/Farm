@@ -5,6 +5,8 @@ import org.farm.farm.Crop;
 import org.farm.farm.Product;
 import org.farm.farm.Farm;
 
+import org.farm.farm.EdibleCropType;
+
 import java.util.LinkedList;
 import java.util.List;
 
@@ -98,13 +100,25 @@ public class Market {
     // Add default products to the market
     private void addDefaultProducts() {
         // Adding some crops
-        products.add(new Crop("Corn", 30, 4, 8)); // Corn - Price: 30, Growth Time: 4, Yield: 8
-        products.add(new Crop("Wheat", 50, 5, 10)); // Wheat - Price: 50, Growth Time: 5, Yield: 10
+// Adding crops
+        products.add(new Crop("Corn", 30, 4, 8, EdibleCropType.CORN, false));
+// Corn: High risk, high reward, feeds both chickens and cows.
+
+        products.add(new Crop("Wheat", 50, 5, 10, EdibleCropType.WHEAT, false));
+// Wheat: Mid-risk, feeds chickens only.
+
+        products.add(new Crop("Potato", 20, 5, 10, EdibleCropType.NONE, true));
+// Potato: Immune to catastrophes, sustainable, cannot feed animals.
 
         // Adding some animals
         // Adding some animals with produced products (e.g., Milk for Cow)
-        products.add(new Animal("Cow", 300, 2, new Product("Milk", 100), 2)); // Cow - Price: 300, Survival Time: 2, Milk Product, Age: 2
-        products.add(new Animal("Chicken", 100, 1, new Product("Egg", 20), 1)); // Chicken - Price: 100, Survival Time: 1, Egg Product, Age: 1
+// Adding animals
+        products.add(new Animal("Cow", 300, 2, new Product("Milk", 100), EdibleCropType.CORN, 2));
+// Cow: Price: 300, Survival: 2 turns, Produces Milk, Eats Corn.
+
+        products.add(new Animal("Chicken", 100, 1, new Product("Egg", 20), EdibleCropType.WHEAT, 1));
+// Chicken: Price: 100, Survival: 1 turn, Produces Eggs, Eats Wheat.
+
     }
 
     // Get available products in the market

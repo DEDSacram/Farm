@@ -49,10 +49,65 @@ public class Farm {
     }
 
 
+    // Collect products from animals and add them to storage
+    public void collectAnimalProducts() {
+        for (Animal animal : animals) {
+            if (animal != null) {
+                Product product = animal.getProducedProduct();
+                if (storage.addProduct(product)) {
+                    System.out.println("Collected " + product.getName() + " from " + animal.getName());
+                } else {
+                    System.out.println("Storage is full! Cannot collect " + product.getName() + " from " + animal.getName());
+                    break; // Stop if storage is full
+                }
+            }
+        }
+    }
+
+
+
     // Trigger a catastrophe (affects farm)
     public void triggerCatastrophe() {
         Catastrophe.applyCatastrophe(this);
     }
+
+//    public void feedAnimal(int animalIndex, EdibleCropType crop) {
+//        if (animalIndex < 0 || animalIndex >= animals.length || animals[animalIndex] == null) {
+//            System.out.println("Invalid animal index.");
+//            return;
+//        }
+//
+//        Animal animal = animals[animalIndex];
+//        int newSurvivalTime = 5; // Reset survival time to 5 turns (or a value of your choice)
+//        if (!animal.feed(crop, newSurvivalTime)) {
+//            System.out.println("Failed to feed " + animal.getName() + ". Check the food type.");
+//        }
+//    }
+
+    public void feedAnimalFromStorage(int animalIndex, int cropIndex) {
+        if (animalIndex < 0 || animalIndex >= animals.length || animals[animalIndex] == null) {
+            System.out.println("Invalid animal index.");
+            return;
+        }
+
+        if (cropIndex < 0 || cropIndex >= storage.size()) {
+            System.out.println("Invalid crop index.");
+            return;
+        }
+
+        Animal animal = animals[animalIndex];
+        Crop crop = (Crop) storage.getProduct(cropIndex);  // Cast to Crop since it's a product
+
+        if (animal.feed(crop.getCropType(), 5)) { // Reset survival time to 5
+            System.out.println("Fed " + animal.getName() + " with " + crop.getName());
+            storage.removeProduct(cropIndex); // Remove the crop from storage after feeding
+        } else {
+            System.out.println(animal.getName() + " cannot eat " + crop.getName());
+        }
+    }
+
+
+
 
     // Method to add a crop to the fields if there is space
     public boolean addCrop(Crop crop) {

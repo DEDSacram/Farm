@@ -98,6 +98,7 @@ public class Game {
         farm.decreaseCropGrowthTime();
         farm.triggerCatastrophe();
         farm.harvest();
+        farm.collectAnimalProducts();
         turn++;
         System.out.println("Turn " + turn + " complete.");
     }

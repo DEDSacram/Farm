@@ -17,6 +17,9 @@ public class Catastrophe {
     private static void affectCrops(Crop[] crops) {
         for (int i = 0; i < crops.length; i++) {
             if (crops[i] != null && RANDOM.nextInt(100) < 50) {  // 50% chance to reduce growth
+                if(crops[i].isImmune()){
+                    continue;
+                }
                 crops[i].decrementGrowthTime();
                 System.out.println("Catastrophe reduced crop growth!");
             }
