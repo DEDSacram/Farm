@@ -80,7 +80,7 @@ public class Market {
             }
 
             // Add product to market (market now has it for sale)
-            products.add(product);
+        //    products.add(product);
 
             // Increase the farm's coins (market pays for the product)
             farm.increaseCoins(product.getPrice());
@@ -159,16 +159,33 @@ public class Market {
 
                     int survivalTime = 3 + random.nextInt(3);  // Random survival time between 3 and 5
                     int maxAge = baseMaxAges[animalIndex] + random.nextInt(ageRanges[animalIndex] * 2 + 1) - ageRanges[animalIndex]; // Random maxAge within range
+
+                    // Determine the price for the animal product (Milk for Cow, Egg for Chicken)
+                    int productPrice = 0;
+                    switch (animalProducts[animalIndex]) {
+                        case "Milk":
+                            productPrice = 150 + random.nextInt(51);  // Milk price between 150 and 200
+                            break;
+                        case "Egg":
+                            productPrice = 20 + random.nextInt(11);  // Egg price between 20 and 30
+                            break;
+                    }
+
+                    // Create the Product with the correct price for milk or egg
+                    Product producedProduct = new Product(animalProducts[animalIndex], productPrice);
+
+                    // Create the Animal
                     Animal animal = new Animal(animalNames[animalIndex],
                             price,
                             survivalTime,
-                            new Product(animalProducts[animalIndex], 100),  // Product (Milk or Egg)
+                            producedProduct,  // The product (Milk or Egg)
                             animalFood[animalIndex],
                             0,
                             maxAge,
                             ageRanges[animalIndex]);
                     products.add(animal);
-                } else {
+                }
+                else {
                     // Randomly pick a crop
                     int cropIndex = random.nextInt(cropNames.length);
                     int price = 0;
