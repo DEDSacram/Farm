@@ -115,7 +115,7 @@ public class Market {
     }
 
 
-
+    // balancing prices yet to do, right now farming is much better than owning an animal
     private void addDefaultProducts() {
         Random random = new Random();
 
