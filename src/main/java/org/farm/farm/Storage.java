@@ -110,16 +110,46 @@ public class Storage {
             if (isIndexingEnabled) {
                 // Print with index
                 for (int i = 0; i < inventory.size(); i++) {
-                    System.out.println(i + ": " + inventory.get(i).getName() + " - Quantity: 1");
+                    Product product = inventory.get(i);
+                    String productDetails = i + ": " + product.getName() + " - Price: " + product.getPrice() + " - Quantity: " + product.getQuantity();
+
+                    // If the product is an Animal, print additional details
+                    if (product instanceof Animal) {
+                        Animal animal = (Animal) product;
+                        productDetails += " - Age: " + animal.getAge() + "/" + animal.getMaxAge() + " - Survival Time: " + animal.getSurvivalTime() + " - Produces: " + animal.getProducedProduct().getName();
+                    }
+
+                    // If the product is a Crop, print additional details
+                    else if (product instanceof Crop) {
+                        Crop crop = (Crop) product;
+                        productDetails += " - Growth Time: " + crop.getGrowthTime() + " - Yield: " + crop.getYield();
+                    }
+
+                    System.out.println(productDetails);
                 }
             } else {
                 // Print without index
                 for (Product product : inventory) {
-                    System.out.println(product.getName() + " - Quantity: " + product.getQuantity());
+                    String productDetails = product.getName() + " - Price: " + product.getPrice() + " - Quantity: " + product.getQuantity();
+
+                    // If the product is an Animal, print additional details
+                    if (product instanceof Animal) {
+                        Animal animal = (Animal) product;
+                        productDetails += " - Age: " + animal.getAge() + "/" + animal.getMaxAge() + " - Survival Time: " + animal.getSurvivalTime() + " - Produces: " + animal.getProducedProduct().getName();
+                    }
+
+                    // If the product is a Crop, print additional details
+                    else if (product instanceof Crop) {
+                        Crop crop = (Crop) product;
+                        productDetails += " - Growth Time: " + crop.getGrowthTime() + " - Yield: " + crop.getYield();
+                    }
+
+                    System.out.println(productDetails);
                 }
             }
         }
     }
+
 
     // Get the current number of products in the inventory
     public int size() {
