@@ -114,20 +114,35 @@ public class Game {
         boolean validInput = false;
 
         while (!validInput) {
-            System.out.println("Sell product {name, quantity} for now index");
+            System.out.println("Enter the index of the product you want to sell:");
             try {
                 sellProductIndex = Integer.parseInt(scanner.nextLine());
-                if (farm.getStorage().getProduct(sellProductIndex) != null) {
-                    market.sellProductByIndex(sellProductIndex, farm);
-                    validInput = true;  // Input is valid, exit the loop
+                Product product = farm.getStorage().getProduct(sellProductIndex);
+
+                if (product != null) {
+                    int maxQuantity = product.getQuantity();
+                    System.out.println("Enter quantity to sell (1 to " + maxQuantity + "):");
+
+                    int quantityToSell = Integer.parseInt(scanner.nextLine());
+
+                    if (quantityToSell > 0 && quantityToSell <= maxQuantity) {
+                        // Sell the product in a loop to handle the quantity
+                        for (int i = 0; i < quantityToSell; i++) {
+                            market.sellProductByIndex(sellProductIndex, farm);
+                        }
+                        validInput = true; // Exit the loop after successful sale
+                    } else {
+                        System.out.println("Invalid quantity! Please enter a number between 1 and " + maxQuantity + ".");
+                    }
                 } else {
                     System.out.println("No product found at the given index.");
                 }
             } catch (NumberFormatException e) {
-                System.out.println("Invalid input! Please enter a valid number for the product index.");
+                System.out.println("Invalid input! Please enter a valid number.");
             }
         }
     }
+
 
     private void expandCropSpace() {
         int costPerExpansion = 50;  // Cost to expand crop space by 5
