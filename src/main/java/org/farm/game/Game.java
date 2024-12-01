@@ -257,11 +257,14 @@ public class Game {
 
         LinkedList<Product> allProducts = farm.getStorage().getInventory();  // Get all products from storage
 
-        // Print animals with indexes
+        // Print animals with indexes (hide max age)
         int index = 0;
         for (Product product : allProducts) {
             if (product instanceof Animal) {
-                System.out.println(index + ". " + product);  // Print the animal with its index
+                Animal animal = (Animal) product;
+                System.out.println(index + ". " + animal.getName() + " - Price: " + animal.getPrice() + " - Quantity: " + animal.getQuantity() +
+                        " - Survival Time: " + animal.getSurvivalTime() + " - Age: " + animal.getAge() + "/" + animal.getMaxAge() +
+                        " - Produces: " + animal.getProducedProduct().getName() + " - Eats: " + animal.getRequiredFood());
                 index++;
             }
         }
@@ -283,7 +286,10 @@ public class Game {
         // Proceed if the input is valid
         Product selectedAnimal = allProducts.get(animalIndex);
         if (selectedAnimal instanceof Animal) {
-            boolean added = farm.addAnimal((Animal) selectedAnimal);
+            Animal animal = (Animal) selectedAnimal;
+            System.out.println("You selected: " + animal.getName() + " - Current Age: " + animal.getAge());  // Show current age after selection
+
+            boolean added = farm.addAnimal(animal);
             if (added) {
                 selectedAnimal.decreaseQuantity();
                 if (selectedAnimal.getQuantity() == 0) {
@@ -297,6 +303,7 @@ public class Game {
             System.out.println("Invalid selection. Please choose a valid animal.");
         }
     }
+
 
 }
 
