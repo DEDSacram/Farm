@@ -166,6 +166,9 @@ public class Game {
 
         // Aging / Growth
         farm.incrementAnimalAge();
+        farm.HungerorKill();
+
+
         farm.decreaseCropGrowthTime();
 
         // Feed Animals from Storage (prioritize young and hungry ones)

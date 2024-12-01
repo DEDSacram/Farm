@@ -78,6 +78,25 @@ public class Farm {
         }
     }
 
+    public void HungerorKill() {
+        for (int i = 0; i < animals.length; i++) {
+            if (animals[i] != null) {
+                Animal animal = animals[i];
+
+                // Decrease survival time
+                animal.decreaseSurvivalTime();
+
+                if (animal.getSurvivalTime() <= 0) {
+                    System.out.println(animal.getName() + " has died of hunger and is removed from the farm.");
+                    animals[i] = null; // Set to null instead of removing
+                } else {
+                    System.out.println(animal.getName() + " is still alive. Remaining survival time: " + animal.getSurvivalTime());
+                }
+            }
+        }
+    }
+
+
 
 
     // Trigger a catastrophe (affects farm)

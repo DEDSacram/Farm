@@ -22,6 +22,9 @@ public class Animal extends Product {
         Random random = new Random();
         this.maxAge = baseMaxAge + random.nextInt(ageRange * 2 + 1) - ageRange; // Random between baseMaxAge - ageRange and baseMaxAge + ageRange
     }
+    public void decreaseSurvivalTime(){
+        this.survivalTime--;
+    }
 
     public int getSurvivalTime() {
         return survivalTime;
