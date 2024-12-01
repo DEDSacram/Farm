@@ -1,5 +1,6 @@
 package org.farm.game;
 
+import java.util.LinkedList;
 import java.util.Scanner;
 import org.farm.farm.Farm;
 import org.farm.market.Market;
@@ -204,54 +205,98 @@ public class Game {
     }
 
 
-
     private void addCropFromStorage(boolean isIndexingEnabled) {
         System.out.println("\n=== Choose Crop to Add from Storage ===");
-        farm.getStorage().printStorageWithIndex(isIndexingEnabled);  // Pass indexing flag
 
-        System.out.print("Enter the index of the crop to add: ");
-        int cropIndex = Integer.parseInt(scanner.nextLine());
+        LinkedList<Product> allProducts = farm.getStorage().getInventory();  // Get all products from storage
 
-        Product product = farm.getStorage().getProduct(cropIndex);
-        if (product instanceof Crop) {
-            boolean added = farm.addCrop((Crop) product);  // Add crop to farm if valid
-            if (added) {
-                product.decreaseQuantity();  // Decrease the quantity of the product in storage
-                if (product.getQuantity() == 0) {
-                    farm.getStorage().removeProduct(cropIndex);  // Remove product from storage if quantity is 0
+        // Print crops with indexes
+        int index = 0;
+        for (Product product : allProducts) {
+            if (product instanceof Crop) {
+                System.out.println(index + ". " + product);  // Print the crop with its index
+                index++;
+            }
+        }
+
+        // Input validation for crop index
+        int cropIndex = -1;
+        while (cropIndex < 0 || cropIndex >= allProducts.size()) {
+            System.out.print("Enter the index of the crop to add: ");
+            try {
+                cropIndex = Integer.parseInt(scanner.nextLine());
+                if (cropIndex < 0 || cropIndex >= allProducts.size()) {
+                    System.out.println("Invalid index. Please select a valid crop index.");
                 }
-                System.out.println("Crop added to the farm: " + product.getName());
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input! Please enter a valid number for the crop index.");
+            }
+        }
+
+        // Proceed if the input is valid
+        Product selectedCrop = allProducts.get(cropIndex);
+        if (selectedCrop instanceof Crop) {
+            boolean added = farm.addCrop((Crop) selectedCrop);
+            if (added) {
+                selectedCrop.decreaseQuantity();
+                if (selectedCrop.getQuantity() == 0) {
+                    farm.getStorage().removeProduct(cropIndex);  // Remove from storage if quantity is 0
+                }
+                System.out.println("Crop added to the farm: " + selectedCrop.getName());
             } else {
                 System.out.println("Failed to add crop to the farm.");
             }
         } else {
-            System.out.println("Selected product is not a crop.");
+            System.out.println("Invalid selection. Please choose a valid crop.");
         }
     }
 
 
     private void addAnimalFromStorage(boolean isIndexingEnabled) {
         System.out.println("\n=== Choose Animal to Add from Storage ===");
-        farm.getStorage().printStorageWithIndex(isIndexingEnabled);  // Pass indexing flag
 
-        System.out.print("Enter the index of the animal to add: ");
-        int animalIndex = Integer.parseInt(scanner.nextLine());
+        LinkedList<Product> allProducts = farm.getStorage().getInventory();  // Get all products from storage
 
-        Product product = farm.getStorage().getProduct(animalIndex);
-        if (product instanceof Animal) {
-            boolean added = farm.addAnimal((Animal) product);  // Add animal to farm if valid
-            if (added) {
-                product.decreaseQuantity();  // Decrease the quantity of the product in storage
-                if (product.getQuantity() == 0) {
-                    farm.getStorage().removeProduct(animalIndex);  // Remove product from storage if quantity is 0
+        // Print animals with indexes
+        int index = 0;
+        for (Product product : allProducts) {
+            if (product instanceof Animal) {
+                System.out.println(index + ". " + product);  // Print the animal with its index
+                index++;
+            }
+        }
+
+        // Input validation for animal index
+        int animalIndex = -1;
+        while (animalIndex < 0 || animalIndex >= allProducts.size()) {
+            System.out.print("Enter the index of the animal to add: ");
+            try {
+                animalIndex = Integer.parseInt(scanner.nextLine());
+                if (animalIndex < 0 || animalIndex >= allProducts.size()) {
+                    System.out.println("Invalid index. Please select a valid animal index.");
                 }
-                System.out.println("Animal added to the farm: " + product.getName());
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input! Please enter a valid number for the animal index.");
+            }
+        }
+
+        // Proceed if the input is valid
+        Product selectedAnimal = allProducts.get(animalIndex);
+        if (selectedAnimal instanceof Animal) {
+            boolean added = farm.addAnimal((Animal) selectedAnimal);
+            if (added) {
+                selectedAnimal.decreaseQuantity();
+                if (selectedAnimal.getQuantity() == 0) {
+                    farm.getStorage().removeProduct(animalIndex);  // Remove from storage if quantity is 0
+                }
+                System.out.println("Animal added to the farm: " + selectedAnimal.getName());
             } else {
                 System.out.println("Failed to add animal to the farm.");
             }
         } else {
-            System.out.println("Selected product is not an animal.");
+            System.out.println("Invalid selection. Please choose a valid animal.");
         }
     }
 
 }
+
