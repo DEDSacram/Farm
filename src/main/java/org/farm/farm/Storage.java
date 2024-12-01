@@ -5,21 +5,74 @@ import java.util.LinkedList;
 public class Storage {
 
     private final LinkedList<Product> inventory; // Use LinkedList instead of an array
-    public static final int MAX_CAPACITY = 10; // Limit storage to 10 products
+//    public static final int MAX_CAPACITY = 10; // Limit storage to 10 products
 
     public Storage() {
         inventory = new LinkedList<>();
     }
 
-    // Add product to the inventory
     public boolean addProduct(Product product) {
-        if (inventory.size() >= MAX_CAPACITY) {
-            System.out.println("Inventory is full!");
-            return false;
+        for (Product existingProduct : inventory) {
+            if (areProductsEquivalent(existingProduct, product)) {
+                // Combine quantities if products are equivalent
+                existingProduct.setQuantity(existingProduct.getQuantity() + product.getQuantity());
+                return true;
+            }
         }
-        inventory.add(product); // Adds product to the end of the list
+
+        // Additional checks for animals
+        if (product instanceof Animal) {
+            Animal animal = (Animal) product;
+
+            // Prevent adding animals with limited lifetime into storage
+            if (animal.getAge() > 0 || animal.getSurvivalTime() < animal.getMaxSurvivalTime()) {
+                System.out.println("Cannot add animals with active lifetimes or hunger statuses to storage.");
+                return false;
+            }
+        }
+
+        // Add the product if no equivalent product exists and it's not a restricted animal
+        inventory.add(product);
         return true;
     }
+
+    // Helper method to check if two products are equivalent
+    private boolean areProductsEquivalent(Product existing, Product newProduct) {
+        if (existing.getClass() != newProduct.getClass()) {
+            return false; // Products must belong to the same subclass
+        }
+        if (!existing.getName().equals(newProduct.getName()) ||
+                existing.getPrice() != newProduct.getPrice()) {
+            return false; // Name and price must match
+        }
+
+        // Check subclass-specific properties
+        if (existing instanceof Crop && newProduct instanceof Crop) {
+            Crop existingCrop = (Crop) existing;
+            Crop newCrop = (Crop) newProduct;
+            return existingCrop.getGrowthTime() == newCrop.getGrowthTime() &&
+                    existingCrop.getYield() == newCrop.getYield() &&
+                    existingCrop.getCropType() == newCrop.getCropType() &&
+                    existingCrop.isImmune() == newCrop.isImmune();
+        }
+
+        if (existing instanceof Animal && newProduct instanceof Animal) {
+            Animal existingAnimal = (Animal) existing;
+            Animal newAnimal = (Animal) newProduct;
+
+            // Include lifetime-specific checks for animals
+            return existingAnimal.getAge() == newAnimal.getAge() &&
+                    existingAnimal.getMaxAge() == newAnimal.getMaxAge() &&
+                    existingAnimal.getProducedProduct().equals(newAnimal.getProducedProduct()) &&
+                    existingAnimal.getRequiredFood() == newAnimal.getRequiredFood();
+        }
+
+        // For generic Product, no additional checks
+        return true;
+    }
+
+
+
 
     public boolean removeProduct(int index) {
         if (index < 0 || index >= inventory.size()) {
@@ -71,11 +124,6 @@ public class Storage {
     // Get the current number of products in the inventory
     public int size() {
         return inventory.size();
-    }
-
-    // Check if the inventory is full
-    public boolean isFull() {
-        return inventory.size() >= MAX_CAPACITY;
     }
 
     public LinkedList<Product> getInventory() {

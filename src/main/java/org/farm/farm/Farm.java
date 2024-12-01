@@ -127,6 +127,7 @@ public class Farm {
         return -1;  // Return -1 if no suitable food is found
     }
 
+    // can be manual
     private void feedAnimalFromStorage(Animal animal, int cropIndex) {
         if (cropIndex < 0 || cropIndex >= storage.size()) {
             System.out.println("Invalid crop index.");
@@ -143,6 +144,8 @@ public class Farm {
 
                 // Decrease the quantity of the product
                 crop.decreaseQuantity();
+                // reset time needed to feed
+                animal.resetSurvivalTime();
 
                 // Check if the quantity is zero, then remove the product
                 if (crop.getQuantity() == 0) {
