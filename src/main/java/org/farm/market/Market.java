@@ -35,7 +35,7 @@ public class Market {
 
     public Market() {
         this.products = new LinkedList<>();  // Initialize LinkedList
-        this.coins = 1000;  // Market starts with 1000 coins
+        this.coins = 10000000;
 
         addDefaultProducts();
     }
