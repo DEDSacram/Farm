@@ -19,7 +19,7 @@ public class Game {
         this.farm = new Farm();
         this.market = new Market();
         this.turn = 0;
-        this.isIndexingEnabled = false;  // Default is non-indexed display
+        this.isIndexingEnabled = true;  // Default is non-indexed display
     }
 
     public void toggleIndexing() {
@@ -40,10 +40,9 @@ public class Game {
             System.out.println("7. Next Turn");
             System.out.println("8. Check Farm");
             System.out.println("9. Check Storage");
-            System.out.println("10. Toggle Indexing (On/Off)");
-            System.out.println("11. Expand Crop Space");
-            System.out.println("12. Expand Animal Space");
-            System.out.println("13. Exit");
+            System.out.println("10. Expand Crop Space");
+            System.out.println("11. Expand Animal Space");
+            System.out.println("12. Exit");
             System.out.print("Enter command: ");
 
             String command = scanner.nextLine().toLowerCase();
@@ -77,15 +76,12 @@ public class Game {
                     farm.getStorage().printStorageWithIndex(isIndexingEnabled);  // Pass indexing flag
                     break;
                 case "10":
-                    toggleIndexing();  // Toggle indexing on or off
-                    break;
-                case "11":
                     expandCropSpace();  // Expand crop space option
                     break;
-                case "12":
+                case "11":
                     expandAnimalSpace();  // Expand animal space option
                     break;
-                case "13":
+                case "12":
                     System.out.println("Exiting the game...");
                     return;  // Exit the game
                 default:
@@ -97,9 +93,9 @@ public class Game {
     private void buyProduct() {
         int buyProductIndex = -1;
         boolean validInput = false;
-
+        market.printMarketWithIndex(isIndexingEnabled); // Pass indexing flag
         while (!validInput) {
-            System.out.println("Buy product {name, quantity} for now index");
+            System.out.println("Enter index:");
             try {
                 buyProductIndex = Integer.parseInt(scanner.nextLine());
                 market.buyProductByIndex(buyProductIndex, farm);
@@ -115,7 +111,7 @@ public class Game {
         boolean validInput = false;
 
         while (!validInput) {
-            System.out.println("Enter the index of the product you want to sell:");
+            System.out.println("Enter index:");
             try {
                 sellProductIndex = Integer.parseInt(scanner.nextLine());
                 Product product = farm.getStorage().getProduct(sellProductIndex);
